@@ -10,9 +10,13 @@ import math
 from typing import Dict
 import itertools
 
+# 这两个常量代表了 ImageNet 数据集的均值和标准差，在预处理图像数据时会用到。
 from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+# DropPath 是一种在训练时根据一定概率随机舍弃输入特征图中的路径的机制，可以有效地提升模型的泛化能力。trunc_normal用于生成一个截断的正态分布的随机数。
 from timm.models.layers import DropPath, trunc_normal_
+# register_model 用于将一个模型注册到模型注册表中，以便之后可以通过名称调用。
 from timm.models.registry import register_model
+# to_2tuple 模块用于将一个整数或一个包含两个整数的可迭代对象转换为一个包含两个整数的元组。
 from timm.models.layers.helpers import to_2tuple
 
 EfficientFormer_width = {
@@ -61,8 +65,9 @@ expansion_ratios_S0 = {
     '3': [4, 3, 3, 4],
 }
 
-
+# Attention4D 定义一种Attention4D神经网络模块
 class Attention4D(torch.nn.Module):
+    #定义输入 dim 输出特征图的通道数，key_dim每个头部的查询键的维度，num_heads：头部的数量，attn_ratio：每个头部的值的维度与每个头部的查询和键的维度的比率，resolution：输入特征图的分辨率，act_layer：激活函数，stride：如果设置了这个参数，则对输入特征图使用 stride 为该值的卷积进行下采样，并使用反卷积进行上采样
     def __init__(self, dim=384, key_dim=32, num_heads=8,
                  attn_ratio=4,
                  resolution=7,
